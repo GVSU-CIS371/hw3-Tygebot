@@ -1,6 +1,7 @@
 <template>
   <div>
     <Beverage :isIced="beverageStore.currentTemp === 'Cold'" />
+
     <ul>
       <li>
         <template v-for="temp in beverageStore.temps" :key="temp">
@@ -17,6 +18,7 @@
         </template>
       </li>
     </ul>
+
     <ul>
       <li>
         <template v-for="b in beverageStore.bases" :key="b.id">
@@ -33,6 +35,7 @@
         </template>
       </li>
     </ul>
+
     <ul>
       <li>
         <template v-for="s in beverageStore.syrups" :key="s.id">
@@ -49,6 +52,7 @@
         </template>
       </li>
     </ul>
+
     <ul>
       <li>
         <template v-for="c in beverageStore.creamers" :key="c.id">
@@ -65,16 +69,45 @@
         </template>
       </li>
     </ul>
-    <input type="text" placeholder="Beverage Name" />
-    <button>🍺 Make Beverage</button>
+
+    <input
+      type="text"
+      placeholder="Beverage Name"
+      v-model="beverageStore.currentName"
+    />
+
+    <button @click="beverageStore.makeBeverage()">🍺 Make Beverage</button>
+
+    <div id="beverage-container" style="margin-top: 20px">
+      <h2>Saved Beverages:</h2>
+      <ul>
+        <li v-for="bev in beverageStore.beverages" :key="bev.id">
+          <label>
+            <input
+              type="radio"
+              name="savedBeverages"
+              :value="bev.id"
+              @change="beverageStore.showBeverage(bev.id)"
+            />
+            {{ bev.name }}
+          </label>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div id="beverage-container" style="margin-top: 20px"></div>
 </template>
 
 <script setup lang="ts">
+import { onMounted } from "vue";
 import Beverage from "./components/Beverage.vue";
 import { useBeverageStore } from "./stores/beverageStore";
+
 const beverageStore = useBeverageStore();
+
+onMounted(() => {
+  console.log("[App] Mounted - initializing store");
+  beverageStore.init();
+});
 </script>
 
 <style lang="scss">
